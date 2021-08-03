@@ -73,6 +73,7 @@ class OnboardingState extends State<Onboarding> {
 
   /// Shows an onboarding session with all steps provided and initial index passed via the widget
   void show() {
+    print('We are showing and live!');
     _overlayEntry = _createOverlayEntry(initialIndex: widget.initialIndex);
     Overlay.of(context)!.insert(_overlayEntry);
   }

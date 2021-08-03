@@ -207,14 +207,14 @@ class _OnboardingStepperState extends State<OnboardingStepper>
   }
 
   double _getVerticalPosition(OnboardingStep step, Size size) {
-    final double boxHeight = size.width * 0.45;
+    final double boxHeight = size.height * 0.45;
     if (_widgetRect != null) {
       final Rect holeRect = step.margin.inflateRect(_widgetRect!);
       if (step.fullscreen) {
         if (holeRect.center.dy > size.height / 2) {
           return holeRect.top - boxHeight - step.margin.bottom * 2;
         } else {
-          return holeRect.bottom + step.margin.bottom * 2;
+          return holeRect.bottom + 16;
         }
       } else {
         if (_widgetRect!.center.dy > size.height / 2) {
@@ -233,8 +233,8 @@ class _OnboardingStepperState extends State<OnboardingStepper>
     final Size size = MediaQuery.of(context).size;
     final OnboardingStep step = widget.steps[_index];
     final double boxWidth =
-        step.fullscreen ? size.width * 0.8 : size.width * 0.55;
-    final double boxHeight = size.width * 0.45;
+        step.fullscreen ? size.width * 0.6 : size.width * 0.55;
+    // final double boxHeight = size.width * 0.45;
     final TextTheme textTheme = Theme.of(context).textTheme;
     final TextStyle localTitleTextStyle =
         textTheme.headline5!.copyWith(color: step.titleTextColor);
@@ -275,7 +275,7 @@ class _OnboardingStepperState extends State<OnboardingStepper>
               opacity: _animation,
               child: Container(
                 width: boxWidth,
-                height: boxHeight,
+                // height: boxHeight,
                 padding: step.hasLabelBox ? step.labelBoxPadding : null,
                 decoration: step.hasLabelBox ? step.labelBoxDecoration : null,
                 child: Column(
