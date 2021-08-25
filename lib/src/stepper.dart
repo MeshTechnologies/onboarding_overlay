@@ -282,6 +282,14 @@ class _OnboardingStepperState extends State<OnboardingStepper>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    if (step.image != null && step.image!.isNotEmpty)
+                      Image.asset(step.image!,
+                          width: step.imageWidth, height: step.imageHeight),
+                    if (step.image != null && step.image!.isNotEmpty)
+                      const SizedBox(
+                        height: 10.0,
+                        width: double.infinity,
+                      ),
                     if (step.title != null)
                       Text(
                         step.title!,
