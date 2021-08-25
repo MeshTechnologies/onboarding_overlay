@@ -287,7 +287,7 @@ class _OnboardingStepperState extends State<OnboardingStepper>
                           width: step.imageWidth, height: step.imageHeight),
                     if (step.image != null && step.image!.isNotEmpty)
                       const SizedBox(
-                        height: 10.0,
+                        height: 15.0,
                         width: double.infinity,
                       ),
                     if (step.title != null)
