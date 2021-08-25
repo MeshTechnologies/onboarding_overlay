@@ -14,6 +14,9 @@ class OnboardingStep {
     this.titleTextColor = const Color(0xFFFFFFFF),
     this.bodyText,
     this.bodyTextStyle,
+    this.image = '',
+    this.imageHeight = 40,
+    this.imageWidth = 40,
     this.bodyTextColor = const Color(0xFFFFFFFF),
     this.shape = const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -47,6 +50,10 @@ class OnboardingStep {
   final Color? bodyTextColor;
 
   final String? title;
+
+  final String? image;
+  final double imageHeight;
+  final double imageWidth;
 
   /// By default, the value is
   /// ```
@@ -120,6 +127,7 @@ class OnboardingStep {
     FocusNode? focusNode,
     Color? titleTextColor,
     Color? bodyTextColor,
+    String? image,
     String? title,
     TextStyle? titleTextStyle,
     String? bodyText,
@@ -153,6 +161,7 @@ class OnboardingStep {
       hasArrow: hasArrow ?? this.hasArrow,
       fullscreen: fullscreen ?? this.fullscreen,
       delay: delay ?? this.delay,
+      image: image ?? this.image,
     );
   }
 
@@ -176,6 +185,7 @@ class OnboardingStep {
       hasArrow: $hasArrow, 
       fullscreen: $fullscreen, 
       delay: $delay
+      image: $image,
     )''';
   }
 }
