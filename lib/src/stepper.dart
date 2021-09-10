@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:onboarding_overlay/src/pagination.dart';
 
 import 'hole_painter.dart';
 import 'step.dart';
@@ -248,7 +249,25 @@ class _OnboardingStepperState extends State<OnboardingStepper>
     //     textTheme.navLargeTitleTextStyle.copyWith(color: step.titleTextColor);
     // final TextStyle localBodyTextStyle =
     //     textTheme.textStyle.copyWith(color: step.bodyTextColor);
-
+    //
+    // double _currentPosition = 0.0;
+    // void _updatePosition(double position) {
+    //   setState(() => _currentPosition = _validPosition(position));
+    // }
+    //
+    // const DotsDecorator decorator = DotsDecorator(
+    //   activeColor: Colors.red,
+    //   // activeSize: Size.round(50.0),
+    //   activeShape: RoundedRectangleBorder(),
+    // );
+    //
+    // List<DotsIndicator> paginationIndicators = [
+    //   DotsIndicator(
+    //       dotsCount: 4,
+    //       position: _currentPosition,
+    //       axis: Axis.vertical,
+    //       decorator: decorator,
+    // ];
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
@@ -309,7 +328,8 @@ class _OnboardingStepperState extends State<OnboardingStepper>
                 ),
               ),
             ),
-          )
+          ),
+          Positioned(child: Container(child: Pagination()))
         ],
       ),
     );
