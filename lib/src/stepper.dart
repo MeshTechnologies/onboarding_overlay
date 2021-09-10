@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:onboarding_overlay/src/pagination.dart';
 
 import 'hole_painter.dart';
@@ -61,6 +62,8 @@ class _OnboardingStepperState extends State<OnboardingStepper>
   Offset? _holeOffset;
   Rect? _widgetRect;
 
+  PaginationController paginationController = Get.put(PaginationController());
+
   @override
   void initState() {
     super.initState();
@@ -72,6 +75,15 @@ class _OnboardingStepperState extends State<OnboardingStepper>
     );
     _animation = const AlwaysStoppedAnimation<double>(0.0);
     _controller.addListener(() => setState(() {}));
+    // _controller.addListener(() {
+    //   if (paginationController.forward.value == true) {
+    //     print('pressed forward');
+    //     proceed(
+    //       init: true,
+    //       fromIndex: widget.initialIndex,
+    //     );
+    //   }
+    // });
 
     _holeTween = RectTween(
       begin: Rect.zero,
@@ -82,7 +94,7 @@ class _OnboardingStepperState extends State<OnboardingStepper>
       end: const Color(0x00000000),
     );
 
-    _proceed(
+    proceed(
       init: true,
       fromIndex: widget.initialIndex,
     );
@@ -116,7 +128,19 @@ class _OnboardingStepperState extends State<OnboardingStepper>
     _controller.forward(from: 0.0);
   }
 
-  Future<void> _proceed({bool init = false, int fromIndex = 0}) async {
+  Future<void> proceed({bool init = false, int fromIndex = 0}) async {
+    if (paginationController.forward.value == true) {
+      paginationController.forward.value = false;
+      print(
+          'setting forward value, should be false: ${paginationController.forward.value}');
+    }
+
+    // if (paginationController.back.value == true) {
+    //   paginationController.back.value = false;
+    //   print(
+    //       'setting back value, should be false: ${paginationController.back.value}');
+    // }
+
     assert(() {
       if (widget.stepIndexes.isNotEmpty &&
           !widget.stepIndexes.contains(widget.initialIndex)) {
@@ -271,7 +295,7 @@ class _OnboardingStepperState extends State<OnboardingStepper>
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        _proceed();
+        proceed();
       },
       child: Stack(
         children: <Widget>[

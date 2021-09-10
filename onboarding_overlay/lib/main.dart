@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:onboarding_overlay/lib/src/pagination.dart'
 
 void main() {
   runApp(const MyApp());
