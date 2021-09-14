@@ -17,84 +17,81 @@ class Pagination extends StatefulWidget {
 class _PaginationState extends State<Pagination> {
   PaginationController paginationController = Get.put(PaginationController());
 
-  double _currentPosition = 0.0;
-
-  final _totalDots = 4;
-
-  /// validates that we aren't trying to update the position to an index
-  /// that is greater than total dots
-  double _validPosition(double position) {
-    if (position >= _totalDots) {
-      /// end onboarding
-      print('done');
-    } else if (position < 0) {
-      print("can't go back");
-    }
-    return position;
-    // if (position > _totalDots == false && position < 0 == false) {
-    //   return
-    // }
-  }
-
-  /// updates the current position
-  void _updatePosition(double position) {
-    setState(() => _currentPosition = _validPosition(position));
-  }
-
   /// styles for dots
   static const DotsDecorator decorator = DotsDecorator(
-    activeColor: Colors.red,
-    // activeSize: Size.round(50.0),
-    activeShape: RoundedRectangleBorder(),
+    activeColor: Colors.white,
+    activeShape: CircleBorder(),
   );
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Material(
-            child: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                print('pressed back');
-                _currentPosition--;
-                paginationController.back.value = true;
-                _updatePosition(_currentPosition);
-              },
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(10, 0, 20, 0),
+        child: Row(
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Container(
+              height: 35,
+              width: 35,
+              child: Material(
+                borderRadius: BorderRadius.circular(100),
+                color: Colors.white,
+                clipBehavior: Clip.hardEdge,
+                child: IconButton(
+                  color: Colors.black,
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    setState(
+                      () {
+                        paginationController.back.value = true;
+                      },
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
-
-          // ...widget.indicators,s
-          DotsIndicator(
-            dotsCount: _totalDots,
-            position: _currentPosition,
-            axis: Axis.horizontal,
-            decorator: decorator,
-          ),
-
-          Material(
-            child: IconButton(
-                icon: Icon(Icons.arrow_forward),
-                onPressed: () {
-                  _currentPosition++;
-                  paginationController.forward.value = true;
-                  _updatePosition(_currentPosition);
-                }),
-          )
-        ],
+            Container(
+              margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: DotsIndicator(
+                dotsCount: paginationController.totalDots,
+                position: paginationController.currentPosition.value.toDouble(),
+                axis: Axis.horizontal,
+                decorator: decorator,
+              ),
+            ),
+            Container(
+              height: 35,
+              width: 35,
+              child: Material(
+                borderRadius: BorderRadius.circular(100),
+                color: Colors.white,
+                clipBehavior: Clip.hardEdge,
+                child: IconButton(
+                  color: Colors.black,
+                  icon: Icon(Icons.arrow_forward),
+                  onPressed: () {
+                    setState(
+                      () {
+                        paginationController.forward.value = true;
+                      },
+                    );
+                  },
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
 }
 
-/// on click forward change forward to true && at the end of function we call when we listen for it, change to false.
-
 class PaginationController extends GetxController {
+  RxInt currentPosition = 0.obs;
   RxBool forward = false.obs;
   RxBool back = false.obs;
+  //todo: possibly set this value depending on how many steps are present
+  int totalDots = 5;
 }
-
-// widget.indicators.map((DotsIndicator i) => i).toList()

@@ -47,6 +47,8 @@ class OnboardingStepper extends StatefulWidget {
   /// By default, the value is `Duration(milliseconds: 350)`
   final Duration duration;
 
+  // ValueNotifier<bool> forward = ValueNotifier<bool>(false);
+
   @override
   _OnboardingStepperState createState() => _OnboardingStepperState();
 }
@@ -63,6 +65,11 @@ class _OnboardingStepperState extends State<OnboardingStepper>
   Rect? _widgetRect;
 
   PaginationController paginationController = Get.put(PaginationController());
+  final Stream<int> _bids = (() async* {
+    await Future<void>.delayed(const Duration(seconds: 1));
+    yield 1;
+    await Future<void>.delayed(const Duration(seconds: 1));
+  })();
 
   @override
   void initState() {
@@ -75,16 +82,20 @@ class _OnboardingStepperState extends State<OnboardingStepper>
     );
     _animation = const AlwaysStoppedAnimation<double>(0.0);
     _controller.addListener(() => setState(() {}));
-    // _controller.addListener(() {
-    //   if (paginationController.forward.value == true) {
-    //     print('pressed forward');
-    //     proceed(
-    //       init: true,
-    //       fromIndex: widget.initialIndex,
-    //     );
-    //   }
-    // });
 
+    /// Listens for changes of the forward value on the paginationController
+    paginationController.forward.listen((bool p0) {
+      if (p0 == true) {
+        proceed();
+      }
+    });
+
+    /// Listens for changes of the forward value on the paginationController
+    paginationController.back.listen((bool p0) {
+      if (p0 == true) {
+        proceed();
+      }
+    });
     _holeTween = RectTween(
       begin: Rect.zero,
       end: Rect.zero,
@@ -124,22 +135,49 @@ class _OnboardingStepperState extends State<OnboardingStepper>
     );
 
     _animation = CurvedAnimation(curve: Curves.ease, parent: _controller);
+    _controller
+        .animateTo(paginationController.currentPosition.value.toDouble());
 
     _controller.forward(from: 0.0);
   }
 
   Future<void> proceed({bool init = false, int fromIndex = 0}) async {
-    if (paginationController.forward.value == true) {
-      paginationController.forward.value = false;
-      print(
-          'setting forward value, should be false: ${paginationController.forward.value}');
+    /// This mode variable is used to detect which direction we are moving for
+    /// logic later on since we are setting our forward/back values to false right out the gate
+    /// so that we don't need to separate the logic.
+    String _mode = '';
+
+    /// checks to see if user is proceeding or receding
+    if (paginationController.back.value == true) {
+      /// set the back value to false to reset.
+      paginationController.back.value = false;
+
+      /// ensures the currentPosition isn't set to negative number.
+      if (paginationController.currentPosition.value != 0) {
+        /// set the currentPosition to the previous position.
+        paginationController.currentPosition.value = _index - 1;
+
+        /// sets the mode to reverse
+        _mode = 'reverse';
+      }
     }
 
-    // if (paginationController.back.value == true) {
-    //   paginationController.back.value = false;
-    //   print(
-    //       'setting back value, should be false: ${paginationController.back.value}');
-    // }
+    /// checks to see if user is proceeding or receding
+    if (paginationController.forward.value == true) {
+      if (paginationController.currentPosition.value !=
+          paginationController.totalDots - 1) {
+        /// set the currentPosition to the next position
+        paginationController.currentPosition.value++;
+
+        /// set the forward value to false to reset.
+        paginationController.forward.value = false;
+
+        /// sets the mode to forward
+        _mode = 'forward';
+      }
+    }
+    print('index: $_index');
+    print('currentPosition: ${paginationController.currentPosition.value}');
 
     assert(() {
       if (widget.stepIndexes.isNotEmpty &&
@@ -152,30 +190,45 @@ class _OnboardingStepperState extends State<OnboardingStepper>
       }
       return true;
     }());
+
     if (widget.stepIndexes.isEmpty) {
       if (init) {
+        print(
+            'coming from init $_index cp: ${paginationController.currentPosition.value}');
         _index = fromIndex != 0 ? fromIndex : 0;
       } else {
         await _controller.reverse();
 
         widget.onChanged?.call(_index);
 
-        if (_index < widget.steps.length - 1) {
-          _index++;
-        } else {
-          widget.onEnd?.call(_index);
-          return;
+        /// moves our index to the next index to show the next screen when
+        /// function is called and in forward mode
+        if (_mode == 'forward') {
+          if (_index < widget.steps.length - 1) {
+            _index++;
+          } else {
+            /// ends  the onboarding when last screen is shown and forward is clicked
+            widget.onEnd?.call(_index);
+            return;
+          }
+        } else if (_mode == 'reverse') {
+          /// moves our index to the previous index to show the previous screen when
+          /// function is called and in reverse mode
+          print('index: $_index');
+          if (_index > 0) {
+            _index--;
+          }
         }
       }
 
       final OnboardingStep step = widget.steps[_index];
+
       if (_index > 0) {
         await Future<void>.delayed(step.delay);
       }
       if (_index < widget.steps.length && _index >= 0) {
         _prepare(step);
       }
-
       step.focusNode.requestFocus();
     } else {
       if (init) {
@@ -196,14 +249,14 @@ class _OnboardingStepperState extends State<OnboardingStepper>
         }
       }
 
-      // debugPrint('stepIndexes ${widget.stepIndexes} $_stepIndexes $_index');
-
       final OnboardingStep step = widget.steps[_index];
       if (!init) {
         await Future<void>.delayed(step.delay);
       }
 
-      if (widget.stepIndexes.indexWhere((int el) => el == _index) != -1) {
+      if (widget.stepIndexes.indexWhere(
+              (int el) => el == paginationController.currentPosition.value) !=
+          -1) {
         _prepare(step);
       }
       step.focusNode.requestFocus();
@@ -258,7 +311,7 @@ class _OnboardingStepperState extends State<OnboardingStepper>
     final Size size = MediaQuery.of(context).size;
     final OnboardingStep step = widget.steps[_index];
     final double boxWidth =
-        step.fullscreen ? size.width * 0.6 : size.width * 0.55;
+        step.fullscreen ? size.width * 0.48 : size.width * 0.55;
     // final double boxHeight = size.width * 0.45;
     final TextTheme textTheme = Theme.of(context).textTheme;
     final TextStyle localTitleTextStyle =
@@ -266,37 +319,16 @@ class _OnboardingStepperState extends State<OnboardingStepper>
     final TextStyle localBodyTextStyle =
         textTheme.bodyText1!.copyWith(color: step.bodyTextColor);
 
-    //         final CupertinoTextThemeData textTheme =
-    //     CupertinoTheme.of(context).textTheme;
-
-    // final TextStyle localTitleTextStyle =
-    //     textTheme.navLargeTitleTextStyle.copyWith(color: step.titleTextColor);
-    // final TextStyle localBodyTextStyle =
-    //     textTheme.textStyle.copyWith(color: step.bodyTextColor);
-    //
-    // double _currentPosition = 0.0;
-    // void _updatePosition(double position) {
-    //   setState(() => _currentPosition = _validPosition(position));
-    // }
-    //
-    // const DotsDecorator decorator = DotsDecorator(
-    //   activeColor: Colors.red,
-    //   // activeSize: Size.round(50.0),
-    //   activeShape: RoundedRectangleBorder(),
-    // );
-    //
-    // List<DotsIndicator> paginationIndicators = [
-    //   DotsIndicator(
-    //       dotsCount: 4,
-    //       position: _currentPosition,
-    //       axis: Axis.vertical,
-    //       decorator: decorator,
-    // ];
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
-        proceed();
-      },
+      // !I left this out bc if a user mis hits the back button it will go forward
+      // onTap: () {
+      //   print('tapped from gesture detector');
+      //
+      //   /// sets our forward value to true
+      //   paginationController.forward.value = true;
+      //   proceed();
+      // },
       child: Stack(
         children: <Widget>[
           CustomPaint(
@@ -353,7 +385,7 @@ class _OnboardingStepperState extends State<OnboardingStepper>
               ),
             ),
           ),
-          Positioned(child: Container(child: Pagination()))
+          Positioned(top: 530, left: 530, child: Container(child: Pagination()))
         ],
       ),
     );
