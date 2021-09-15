@@ -63,11 +63,6 @@ class _OnboardingStepperState extends State<OnboardingStepper>
   Rect? _widgetRect;
 
   PaginationController paginationController = Get.put(PaginationController());
-  final Stream<int> _bids = (() async* {
-    await Future<void>.delayed(const Duration(seconds: 1));
-    yield 1;
-    await Future<void>.delayed(const Duration(seconds: 1));
-  })();
 
   @override
   void initState() {
