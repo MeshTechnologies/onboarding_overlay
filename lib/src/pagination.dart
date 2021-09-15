@@ -33,23 +33,25 @@ class _PaginationState extends State<Pagination> {
             Container(
               height: 25,
               width: 25,
-              child: Material(
-                borderRadius: BorderRadius.circular(100),
-                color: Colors.white,
-                clipBehavior: Clip.hardEdge,
-                child: IconButton(
-                  iconSize: 10,
-                  color: Colors.black,
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    setState(
-                      () {
-                        paginationController.back.value = true;
-                      },
-                    );
-                  },
-                ),
-              ),
+              child: paginationController.currentPosition.value != 0
+                  ? Material(
+                      borderRadius: BorderRadius.circular(100),
+                      color: Colors.white,
+                      clipBehavior: Clip.hardEdge,
+                      child: IconButton(
+                        iconSize: 10,
+                        color: Colors.black,
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () {
+                          setState(
+                            () {
+                              paginationController.back.value = true;
+                            },
+                          );
+                        },
+                      ),
+                    )
+                  : null,
             ),
             Container(
               margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -72,7 +74,9 @@ class _PaginationState extends State<Pagination> {
                 child: IconButton(
                   iconSize: 10,
                   color: Colors.black,
-                  icon: Icon(Icons.arrow_forward),
+                  icon: paginationController.currentPosition.value == 4
+                      ? const Icon(Icons.check_rounded)
+                      : const Icon(Icons.arrow_forward),
                   onPressed: () {
                     setState(
                       () {
