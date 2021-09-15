@@ -130,8 +130,6 @@ class _OnboardingStepperState extends State<OnboardingStepper>
     );
 
     _animation = CurvedAnimation(curve: Curves.ease, parent: _controller);
-    // _controller
-    //     .animateTo(paginationController.currentPosition.value.toDouble());
 
     _controller.forward(from: 0.0);
   }
