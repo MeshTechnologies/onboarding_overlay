@@ -47,8 +47,6 @@ class OnboardingStepper extends StatefulWidget {
   /// By default, the value is `Duration(milliseconds: 350)`
   final Duration duration;
 
-  // ValueNotifier<bool> forward = ValueNotifier<bool>(false);
-
   @override
   _OnboardingStepperState createState() => _OnboardingStepperState();
 }
