@@ -8,8 +8,6 @@ class Pagination extends StatefulWidget {
     Key? key,
   }) : super(key: key);
 
-  // final List<DotsIndicator> indicators;
-
   @override
   _PaginationState createState() => _PaginationState();
 }
@@ -30,16 +28,17 @@ class _PaginationState extends State<Pagination> {
       child: Container(
         margin: const EdgeInsets.fromLTRB(10, 0, 20, 0),
         child: Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
+            /// sizes our icon button
             Container(
-              height: 35,
-              width: 35,
+              height: 25,
+              width: 25,
               child: Material(
                 borderRadius: BorderRadius.circular(100),
                 color: Colors.white,
                 clipBehavior: Clip.hardEdge,
                 child: IconButton(
+                  iconSize: 10,
                   color: Colors.black,
                   icon: Icon(Icons.arrow_back),
                   onPressed: () {
@@ -61,14 +60,17 @@ class _PaginationState extends State<Pagination> {
                 decorator: decorator,
               ),
             ),
+
+            /// sizes our icon button
             Container(
-              height: 35,
-              width: 35,
+              height: 25,
+              width: 25,
               child: Material(
                 borderRadius: BorderRadius.circular(100),
                 color: Colors.white,
                 clipBehavior: Clip.hardEdge,
                 child: IconButton(
+                  iconSize: 10,
                   color: Colors.black,
                   icon: Icon(Icons.arrow_forward),
                   onPressed: () {
@@ -89,9 +91,15 @@ class _PaginationState extends State<Pagination> {
 }
 
 class PaginationController extends GetxController {
+  /// the active page / dot within the totalDots
   RxInt currentPosition = 0.obs;
+
+  /// is checked on icon button clicks and proceed() method within stepper.
   RxBool forward = false.obs;
+
+  /// is checked on icon button clicks and proceed() method within stepper.
   RxBool back = false.obs;
+
   //todo: possibly set this value depending on how many steps are present
   int totalDots = 5;
 }

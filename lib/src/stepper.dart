@@ -11,7 +11,7 @@ class OnboardingStepper extends StatefulWidget {
     Key? key,
     this.initialIndex = 0,
     required this.steps,
-    this.duration = const Duration(milliseconds: 350),
+    this.duration = const Duration(milliseconds: 200),
     this.onChanged,
     this.onEnd,
     this.stepIndexes = const <int>[],
@@ -27,7 +27,7 @@ class OnboardingStepper extends StatefulWidget {
         }()),
         super(key: key);
 
-  /// is reqired
+  /// is required
   final List<OnboardingStep> steps;
 
   /// By default, vali is 0
@@ -93,7 +93,9 @@ class _OnboardingStepperState extends State<OnboardingStepper>
     /// Listens for changes of the forward value on the paginationController
     paginationController.back.listen((bool p0) {
       if (p0 == true) {
-        proceed();
+        if (paginationController.currentPosition.value != 0) {
+          proceed();
+        }
       }
     });
     _holeTween = RectTween(
@@ -171,14 +173,11 @@ class _OnboardingStepperState extends State<OnboardingStepper>
 
         /// set the forward value to false to reset.
         paginationController.forward.value = false;
-
-        /// sets the mode to forward
-        _mode = 'forward';
       }
-    }
-    print('index: $_index');
-    print('currentPosition: ${paginationController.currentPosition.value}');
 
+      /// sets the mode to forward
+      _mode = 'forward';
+    }
     assert(() {
       if (widget.stepIndexes.isNotEmpty &&
           !widget.stepIndexes.contains(widget.initialIndex)) {
@@ -193,8 +192,6 @@ class _OnboardingStepperState extends State<OnboardingStepper>
 
     if (widget.stepIndexes.isEmpty) {
       if (init) {
-        print(
-            'coming from init $_index cp: ${paginationController.currentPosition.value}');
         _index = fromIndex != 0 ? fromIndex : 0;
       } else {
         await _controller.reverse();
@@ -214,7 +211,6 @@ class _OnboardingStepperState extends State<OnboardingStepper>
         } else if (_mode == 'reverse') {
           /// moves our index to the previous index to show the previous screen when
           /// function is called and in reverse mode
-          print('index: $_index');
           if (_index > 0) {
             _index--;
           }
@@ -267,7 +263,6 @@ class _OnboardingStepperState extends State<OnboardingStepper>
     final double boxWidth =
         step.fullscreen ? size.width * 0.8 : size.width * 0.55;
     if (_widgetRect != null) {
-      // final Rect holeRect = step.margin.inflateRect(_widgetRect);
       if (step.fullscreen) {
         return (size.width - boxWidth) / 2;
       } else {
@@ -292,7 +287,7 @@ class _OnboardingStepperState extends State<OnboardingStepper>
         if (holeRect.center.dy > size.height / 2) {
           return holeRect.top - boxHeight - step.margin.bottom * 2;
         } else {
-          return holeRect.bottom + 16;
+          return holeRect.bottom + 35;
         }
       } else {
         if (_widgetRect!.center.dy > size.height / 2) {
@@ -302,7 +297,7 @@ class _OnboardingStepperState extends State<OnboardingStepper>
         }
       }
     } else {
-      return size.height / 2 - boxHeight / 2;
+      return size.height / 2 - boxHeight / 1.3;
     }
   }
 
@@ -311,7 +306,7 @@ class _OnboardingStepperState extends State<OnboardingStepper>
     final Size size = MediaQuery.of(context).size;
     final OnboardingStep step = widget.steps[_index];
     final double boxWidth =
-        step.fullscreen ? size.width * 0.48 : size.width * 0.55;
+        step.fullscreen ? size.width * 0.6 : size.width * 0.55;
     // final double boxHeight = size.width * 0.45;
     final TextTheme textTheme = Theme.of(context).textTheme;
     final TextStyle localTitleTextStyle =
@@ -323,7 +318,6 @@ class _OnboardingStepperState extends State<OnboardingStepper>
       behavior: HitTestBehavior.opaque,
       // !I left this out bc if a user mis hits the back button it will go forward
       // onTap: () {
-      //   print('tapped from gesture detector');
       //
       //   /// sets our forward value to true
       //   paginationController.forward.value = true;
@@ -350,7 +344,6 @@ class _OnboardingStepperState extends State<OnboardingStepper>
               opacity: _animation,
               child: Container(
                 width: boxWidth,
-                // height: boxHeight,
                 padding: step.hasLabelBox ? step.labelBoxPadding : null,
                 decoration: step.hasLabelBox ? step.labelBoxDecoration : null,
                 child: Column(
