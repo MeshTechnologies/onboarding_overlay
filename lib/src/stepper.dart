@@ -1,3 +1,4 @@
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -77,20 +78,32 @@ class _OnboardingStepperState extends State<OnboardingStepper>
     _controller.addListener(() => setState(() {}));
 
     /// Listens for changes of the forward value on the paginationController
-    paginationController.forward.listen((bool p0) {
-      if (p0 == true) {
-        proceed();
-      }
-    });
+    paginationController.forward.listen(
+      (bool p0) {
+        if (p0 == true) {
+          EasyDebounce.debounce(
+            'proceed back',
+            const Duration(milliseconds: 300),
+            () async => await proceed(),
+          );
+        }
+      },
+    );
 
     /// Listens for changes of the forward value on the paginationController
-    paginationController.back.listen((bool p0) {
-      if (p0 == true) {
-        if (paginationController.currentPosition.value != 0) {
-          proceed();
+    paginationController.back.listen(
+      (bool p0) {
+        if (p0 == true) {
+          if (paginationController.currentPosition.value != 0) {
+            EasyDebounce.debounce(
+              'proceed forwards',
+              const Duration(milliseconds: 300),
+              () async => await proceed(),
+            );
+          }
         }
-      }
-    });
+      },
+    );
     _holeTween = RectTween(
       begin: Rect.zero,
       end: Rect.zero,
