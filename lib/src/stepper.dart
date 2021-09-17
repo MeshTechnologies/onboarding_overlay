@@ -83,7 +83,7 @@ class _OnboardingStepperState extends State<OnboardingStepper>
         if (p0 == true) {
           EasyDebounce.debounce(
             'proceed back',
-            const Duration(milliseconds: 300),
+            const Duration(milliseconds: 500),
             () async => await proceed(),
           );
         }
@@ -97,7 +97,7 @@ class _OnboardingStepperState extends State<OnboardingStepper>
           if (paginationController.currentPosition.value != 0) {
             EasyDebounce.debounce(
               'proceed forwards',
-              const Duration(milliseconds: 300),
+              const Duration(milliseconds: 500),
               () async => await proceed(),
             );
           }
