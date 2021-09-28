@@ -323,7 +323,6 @@ class _OnboardingStepperState extends State<OnboardingStepper>
       onTap: () {
         /// sets our forward value to true
         paginationController.forward.value = true;
-        proceed();
       },
       child: Stack(
         children: <Widget>[
