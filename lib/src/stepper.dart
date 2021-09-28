@@ -320,13 +320,11 @@ class _OnboardingStepperState extends State<OnboardingStepper>
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      // !I left this out bc if a user mis hits the back button it will go forward
-      // onTap: () {
-      //
-      //   /// sets our forward value to true
-      //   paginationController.forward.value = true;
-      //   proceed();
-      // },
+      onTap: () {
+        /// sets our forward value to true
+        paginationController.forward.value = true;
+        proceed();
+      },
       child: Stack(
         children: <Widget>[
           CustomPaint(
