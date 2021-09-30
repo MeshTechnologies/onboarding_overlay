@@ -15,6 +15,7 @@ class OnboardingStepper extends StatefulWidget {
     this.duration = const Duration(milliseconds: 200),
     this.onChanged,
     this.onEnd,
+    required this.window,
     this.stepIndexes = const <int>[],
   })  : assert(() {
           if (stepIndexes.isNotEmpty && !stepIndexes.contains(initialIndex)) {
@@ -27,6 +28,8 @@ class OnboardingStepper extends StatefulWidget {
           return true;
         }()),
         super(key: key);
+
+  final Widget window;
 
   /// is required
   final List<OnboardingStep> steps;
@@ -327,7 +330,7 @@ class _OnboardingStepperState extends State<OnboardingStepper>
       child: Stack(
         children: <Widget>[
           CustomPaint(
-            child: Container(),
+            child: Stack(children: <Widget>[widget.window, Container()]),
             painter: HolePainter(
               fullscreen: step.fullscreen,
               shape: step.shape,
