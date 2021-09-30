@@ -19,12 +19,14 @@ class Onboarding extends StatefulWidget {
     this.onEnd,
     required this.steps,
     required this.child,
+    required this.window,
     this.duration = const Duration(milliseconds: 350),
   }) : super(key: key);
 
   final int initialIndex;
   final ValueChanged<int>? onChanged;
   final ValueChanged<int>? onEnd;
+  final Widget window;
 
   /// is required
   final List<OnboardingStep> steps;
@@ -104,6 +106,7 @@ class OnboardingState extends State<Onboarding> {
       opaque: false,
       builder: (BuildContext context) {
         return OnboardingStepper(
+          window: widget.window,
           initialIndex: initialIndex,
           steps: widget.steps,
           stepIndexes: stepIndexes,
